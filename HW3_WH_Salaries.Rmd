@@ -1,0 +1,62 @@
+---
+title: "HW3 WH Salaries"
+---
+
+In this assignment, we will be working with a dataset containing information about the salaries of White House staffers as of July 2026.
+
+### Task 1: Load the Tidyverse
+
+You will need to load the tidyverse library
+
+```{r}
+library(tidyverse)
+```
+
+Then you'll load the data from the web. The URL for the data is: https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/white_house_salaries_2026.csv. You will create a dataframe called `wh_salaries` that contains the data from this URL.
+
+### Task 2: Load the Data and Describe It
+
+```{r}
+wh_salaries <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/white_house_salaries_2026.csv")
+```
+### Task 3: Describe the Data
+
+You should examine that dataframe carefully by clicking on it in the Environment tab in RStudio. Write a couple of sentences describing the categories of incidents. From a reporting standpoint, what stands out to you about this data? Are there any salary values that will cause problems for analysis?
+
+ANSWER HERE
+
+General employees/detailees are mostly at the bottom of the salary range, while policy advisors are all the way at the top, making the most money. In my opinion, what stands out the most are the ten employees whose salaries are $0. My theory is that aren't in a position where they have to work every day, but even that doesn't make sense because there are always things happening in the government. I'm especially curious because some of these people work as presidential assistants, and other presidential assistants are practically at the top of the salary range for this dataset. I also feel like some clarifying questions would probably not make these data points as interesting, if the answer ends up being something similar to working whenever they're called on. Though, these salary values will cause problems for analysis, because dividing by the total number of employees isn't as accurate if ten of those employees aren't making anything at all.  
+
+### Task 4: Calculate the Mean and Median of the Salaries
+
+Write code to calculate the mean and median of the salaries in the dataset using the `summarize()` function. You don't need to make a new dataframe, just display the results.
+
+```{r}
+wh_salaries |> summarize(mean_salary = mean(SALARY, na.rm=TRUE)) 
+wh_salaries |> summarize(median_salary = median(SALARY, na.rm=TRUE))
+```
+
+### Task 5: Add in the minimum and maximum salaries
+
+Take the code you just wrote and add in the minimum and maximum salaries (the functions for that are `min()` and `max()`). Your results should show four columns: mean_salary, median_salary, min_salary, max_salary.
+
+```{r}
+wh_salaries |> summarize(min_salary = min(SALARY, na.rm=FALSE))
+wh_salaries |> summarize(max_salary = max(SALARY, na.rm=FALSE))
+```
+
+### Task 6: Describe the Results
+
+Write a couple of sentences describing the results of your analysis. What do the mean and median salaries tell you about the data? What do the minimum and maximum salaries tell you? Are there any outliers in the data?
+
+ANSWER HERE
+
+The mean and the median are about the same, so I would say that the data is pretty balanced considering the employees that have a salary. The minimum and maximum present a very wide range in salary, but it's not terribly accurate because the next salaries up from 0.00 are 5 digit numbers, which mean the range really mostly starts from 59661.00 and not 0. In this case, the $0 salries would be the outliers.
+
+### Task 7: Story Idea
+
+Based on the data, what is your best story idea? What is the next step you would take to develop that story idea?
+
+ANSWER HERE
+
+Even though I slightly fought against my own theory, I still think it would be interesting to understand why a small number of employees choose to work for the White House while not on salary. Going off the assumption that they work on demand, I would try to either research these specific employees to see if they do any work not involving their White House position, or try to reach out through any means such as professional email, the phone number of some kind of assistant for that person, etc. I would also look into whether similar officials in these fields consider a job at the White House to be a reputation/resume boost, enough so that the experience from these jobs outweighs the salary benefits. I think it would also be interesting to compare whether these important jobs that don't have salaries actually do more work than other employees that get paid, to try to amplify the point about working for the job experience/reputation bonus.
