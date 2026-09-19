@@ -1,0 +1,68 @@
+---
+title: "HW4 MD CityCrime"
+---
+
+In this assignment, we will be working with a dataset of total crimes reported by Maryland cities for two consecutive years. You'll load the data, calculate the violent and property crime rates for each city for both years, and then calculate the percentage change in the crime rates between the two years. You'll also write a short story based on your findings.
+
+### Task 1: Load the Tidyverse and Janitor
+
+You will need to load the tidyverse library and the janitor library
+
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+Then you'll load the data from the web. The URL for the data is: https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/md_cities_crime_2019_2020.csv. You will create a dataframe called `md_cities` that contains the data from this URL.
+
+### Task 2: Load the Data
+
+```{r}
+md_cities <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/md_cities_crime_2019_2020.csv")
+```
+### Task 3: Calculating Rates
+
+Calculate violent and property crime rates for each city for both years using `mutate()`. You'll create four new columns: `violent_rate_2019`, `property_rate_2019`, `violent_rate_2020`, and `property_rate_2020`. You'll need to figure out the proper unit rate, given that there are varying populations. There's no perfect choice; choose the one that works best for you. Save the results to a new dataframe called `md_cities_rates`.
+
+```{r}
+md_cities_rates <- md_cities |> mutate(violent_rate_2019 = violent2019/pop2019 * 10000, property_rate_2019 = property2019/pop2019 * 10000, violent_rate_2020 = violent2020/pop2020 * 10000, property_rate_2020 = property2020/pop2020 * 10000)
+```
+
+### Task 4: Describe the Rates
+
+Examine the new dataframe, `md_cities_rates`, by clicking on it in the Environment tab in RStudio and sorting by the rate columns. Write a couple of sentences about the results, comparing and contrasting the cities with the highest rates (both violent and property) in 2019 and 2020. Do you see any patterns? What does this tell you about crime in Maryland cities? What's the story here?
+
+ANSWER HERE
+
+Firstly, it should be pointed out that Ocean City holds the highest property rate for both 2019 and 2020, as well as the highest violent rate for 2020. It is only surpassed by Baltimore for violent crime 2019, and it still comes in second. I'm having trouble finding a pattern, because while most of the population counts for the top ten rates of each category are generally higher than four digits, the numbers are still pretty different. Additionally, there are a few outliers in the hundreds. This tells us that crime in Maryland cities don't always necessarily have high rates if the population is high, and it most likely depends on what the actual city is like, or some other specific factor. I think that there is a story worth looking into about the high crime rates in the smaller cities in the hundreds for population.
+
+
+### Task 5: Calculate Percentage Change
+
+Let's add two percentage change columns to your dataframe: one for violent crime rates and one for property crime rates. You'll calculate the percentage change between 2019 and 2020 for each city. Save the results to a new dataframe called `md_cities_change`.
+
+```{r}
+md_cities_change <- md_cities_rates |> mutate(violent_crime_per = (violent_rate_2020 - violent_rate_2019)/violent_rate_2019 * 100, property_crime_per = (property_rate_2020 - property_rate_2019)/property_rate_2019 * 100)
+```
+
+### Task 7: Describe Percentage Changes
+
+Look at the `md_cities_change` dataframe by clicking on it in the Environment tab in RStudio. Write a couple of sentences describing the percentage change results. What's more interesting here, the patterns or the outliers? What's the story in the data?
+
+ANSWER HERE
+
+The percentage change results have quite a lot of smaller cities that yield both highest and lowest percentage changes, and the bigger cities aren't seen as much. By small cities, I refer to high hundreds and low thousands. I think what's most interesting though, is one outlier I see for the lowest percentage change rates, which is Frederick. It sticks out because its population is 73,041, which is a lot higher than the other cities it is grouped with, and its percentages for violent crime and property crime are -95.2% and -90%, which is significant considering their actual crime numbers aren't small numbers like 2 or 5. Additionally, considering the proportion to its population, the actual number of crimes decreasing definitely stands out. 
+
+### Task 8: Tell the Best Story
+
+Write up a lede and nutgraf of a story with the _best_ story idea you've found in this assignment. The lede should be a single sentence that summarizes the most important information in the data. The nutgraf should be a paragraph that provides more context and explains why the data is important.
+
+ANSWER HERE
+
+Fredrick's crime rates dropped nearly 90% from 2019 to 2020, specifically with violent and property crimes. 
+
+The city of Frederick, which data reads had a population of approximately 70,000 people saw bigger changes in its crime statistics compared to smaller cities of less than 2000 people. 
+
+### Task 9: Save Your Work and Put it on GitHub
+
+Save this notebook, then commit it to your local repository. Push the changes to your GitHub repository and submit the URL for this file in ELMS.
