@@ -1,0 +1,65 @@
+---
+title: "Sampling"
+---
+
+Follow along with the demo to learn how to sample data from a population using R and the Tidyverse. You should get started by loading the tidyverse in a new R block.
+
+### Task 1: Load the tidyverse
+```{r}
+library(tidyverse)
+# i forgot that i could comment out whatever i want 
+```
+
+
+### Task 2: Load 1,000 rows of data with the ages of people from 18-80
+```{r}
+set.seed(1114)
+# can be any number, has to be a number (42, 16, 123, etc.)
+
+population <- tibble(
+  age = sample(18:80, 1000, replace = TRUE)
+)
+# "replace" means to overwrite what we previously have, "sample" is the range of numbers and the other number is how many of them (right...? i kinda missed it)
+```
+
+
+### Task 3: Sample 100 rows of data from the dataset
+```{r}
+sample100 <- population |>
+  sample_n(100)
+# now we are sampling 100 rows from our population dataframe
+# oh okay so every time you run, it'll take a different sample set
+```
+
+
+### Task 4: Calculate the mean age and standard deviation of the sample
+```{r}
+sample100 |>
+  summarize(
+    mean_age = mean(age),
+    sd_age = sd(age)
+  )
+# taking mean and standard deviation
+# so we all put different numbers, but we're working in the same range so they sould be similar (which, they were)
+```
+
+
+### Task 5: Calculate the mean age and standard deviation of the population
+```{r}
+population |>
+  summarize(
+    mean_age = mean(age),
+    sd_age = sd(age)
+  )
+# same thing as task 4 but now with population
+```
+
+
+### Task 6: Compare the sample and population statistics
+
+Compare the means and standard deviations. Are they similar? Go back and re-run the sampling and statistics calculations with a smaller sample size. How do the results change?
+
+Yes, the means and standard deviations of sample100 and population are very similar, and are only a few numbers off very frequently. Sometimes it's slightly off, I got 45 for the mean at one point, but the rest of them stayed somewhere between 48-51 for their mean. The standard deviation also stays between 17-19. So, the results are often close.
+
+
+When finished, save your work, switch to GitHub Desktop, then add, commit and push your changes to GitHub and submit the URL of the notebook in ELMS.
