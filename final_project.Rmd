@@ -35,3 +35,7 @@ I guess maybe one question should be if there are missing songs from a specific 
 
 I also am wondering which dataset, taylor_all_songs or taylor_album_songs would be more relevant in this context? Should I be using taylor_album_songs because she has more control over her involvement in the songs' valence or is any song she is involved in equally relevant no matter how involved she is in it?
 
+# other
+
+I went to wjakethompson/taylor on GitHub to try to find the specific link from there I could insert in here instead of just pulling from the website you gave me through the email, but I got confused and couldn't find it.
+
