@@ -1,0 +1,37 @@
+---
+title: "final_project"
+output: html_document
+---
+```{r}
+install.packages("taylor")
+```
+
+```{r}
+library(taylor)
+```
+
+```{r}
+data("taylor_album_songs")
+```
+^ google told me this was how to load the dataset when I looked it up, i'm not really sure how to load it as a read_csv.
+
+# What does it contain and what time period does it cover? 
+
+This dataset contains all of Taylor Swift's songs that come from an album that she released, and it covers October 2006 - October 2025. I'm debating whether to use this one or taylor_all_songs, because with the album songs, she has more control over the actual emotion of the song, but with the all songs, she still does have some impact on how the song is emotionally just not as much.
+
+# Which columns will be most important for your analysis? 
+
+The valence and track_release column. 
+
+# What's missing that you might need or want? 
+
+I think some of the songs might actually be missing, the prominent ones I notice currently are the songs from the "encore" version of the "The Life of a Showgirl" album, and those songs in particular would be pretty important too in considering the valence especially because they're the most recent songs. 
+
+# What questions do you have about it or need help answering?
+
+I mostly just need to know if this is a good enough idea or not. 
+
+I guess maybe one question should be if there are missing songs from a specific album, would there be a way to implement weighting to make up for those losses? I'm actually not sure if weighting applies in this analysis or not, but this is if it does. 
+
+I also am wondering which dataset, taylor_all_songs or taylor_album_songs would be more relevant in this context? Should I be using taylor_album_songs because she has more control over her involvement in the songs' valence or is any song she is involved in equally relevant no matter how involved she is in it?
+
