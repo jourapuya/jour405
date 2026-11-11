@@ -1,0 +1,69 @@
+---
+title: "PG Murders and Heat"
+---
+
+Remember how we talked about people killing each other more when it's hot outside? Let's explore that relationship using homicide and temperature data from Prince George's County. You'll load the data, perform some basic statistical analysis, and create a scatterplot to explore the relationship. Follow the steps below to complete the assignment.
+
+### Task 1: Load the tidyverse
+
+```{r}
+library(tidyverse)
+```
+
+
+### Task 2: Load the dataset from [https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/pg_murder_temps.csv](https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/pg_murder_temps.csv)
+
+```{r}
+pg_murders_heat <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/pg_murder_temps.csv")
+```
+
+
+### Task 3: Use `summarize()` and the `cor()` function to calculate the correlation between murders and temperature, using the pearson method.
+
+```{r}
+pg_murders_heat |> summarize(correlation = cor(murders, temperature, method="pearson"))
+```
+
+
+### Task 4: Create a scatterplot of murders and temperature, using `geom_point()`. Your aes() will have temperatures on the x axis, murders on the y axis and add a label for the month (so label=month inside the aes()).
+
+```{r}
+
+pg_murders_heat |> 
+  ggplot() +
+  geom_point(aes(x=temperature, y=murders, label=month)) +
+  geom_smooth(aes(x=temperature, y=murders, method="lm"))
+
+```
+
+
+### Task 5: Add labels to the scatterplot using geom_text(). Inside geom_text() put the same aes() as geom_point in Task 4, then after the aes() add size = 5.
+
+```{r}
+
+pg_murders_heat |> 
+  ggplot() +
+  geom_point(aes(x=temperature, y=murders, label=month)) +
+  geom_text(aes(x=temperature, y=murders, label=month), size = 5) +
+  geom_smooth(aes(x=temperature, y=murders, method="lm"))
+
+```
+
+
+### Task 6: Describe the results of both the correlation calculation and the scatterplot.
+
+The correlation calculation is a lot closer to 1 than 0, even though it's pretty much in the middle of the two, but that means it's also pretty far from -1, which means the data has a pretty strong correlation. The scatterplot shows the murders going up during the typically hotter months like June, July, and May(and some surrounding months like August and September), and staying down near the colder months like January and February (and somewhat December). Basically the scatterplot shows that there is at least visually some sort of pattern, and the correlation calculation proves it even further with numbers. It's not totally perfect because the line doesn't exactly match up with any of the points, but that's also probably why the correlation calculation isn't fully 1 and is only close to 1.
+
+When you are done, save your work, switch to GitHub Desktop, then add, commit and push your changes to GitHub and submit the URL of the notebook in ELMS.
+
+# Extra
+- 0.5 and 0.6 is fairly prevalent but not too much, but 0.3 and 0.4 isn't really anything to write about
+- ALSO important: correlation != causation
+- very known thing but very skipped over thing as well
+- other outside factors could be contributing to this relationship
+- like ice cream sales and shark attacks is just because people are going to the beach
+
+- What variables actually do help predict an outcome?
+- blue line is line of best fit
+  - y = mx + b : useful in showing causes/contributions
+  - method="lm"
