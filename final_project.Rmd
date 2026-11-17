@@ -15,6 +15,34 @@ data("taylor_album_songs")
 ```
 ^ google told me this was how to load the dataset when I looked it up, i'm not really sure how to load it as a read_csv.
 
+# --- The Tests You Could Run ---
+
+#   More/New Questions
+
+Have Taylor Swift's songs become more or less musically positive over time?
+- happier/sadder correlated with date
+
+Does explicity make Taylor Swift's songs longer or shorter?
+- song length correlated to explicity
+
+Are Taylor Swift's songs louder or quieter when they are explicit?
+Are Taylor Swift's songs faster or slower when they are explicit?
+- explicity correlated to tempo(?) / loudness(?)
+- could replace explicit with over time(?)
+
+Have Taylor Swift's songs become more or less explicit over time?
+- explicit correlated with date
+
+#   Possible Tests To Run
+
+- I think the pearson method from the SoccerFouls activity would work well because it's comparing two things and determining if they have any sort of correlation, which is what my questions are evaluating (looking for a relationship between the variables)
+- I think maybe linear regression could work also? This fits more with the questions that have variables changing over time, such as musical positivity over time, song length over time, explicity over time, etc. 
+
+I looked up "different kinds of statistics tests" on Google to see if I had any more options other than these but they had a lot of variables and I wasn't sure if they worked well with my specific type of question. The other options were T-Tests, Z-Tests, and ANOVA and they were categorized under parametric tests. Unless I'm doing something wrong, these two are the only viable tests that look decent to me.
+
+
+# --- Data Explorations ---
+
 # What does it contain and what time period does it cover? 
 
 This dataset contains all of Taylor Swift's songs that come from an album that she released, and it covers October 2006 - October 2025. I'm debating whether to use this one or taylor_all_songs, because with the album songs, she has more control over the actual emotion of the song, but with the all songs, she still does have some impact on how the song is emotionally just not as much.
