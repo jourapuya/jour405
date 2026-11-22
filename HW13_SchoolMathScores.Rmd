@@ -1,0 +1,125 @@
+---
+title: "Identifying Schools with Biggest Differences in Math Test Scores, Part 2"
+author: "Charlie Apuya"
+---
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+options(scipen = 999)
+```
+
+### Introduction
+
+In the class activity, you tested a school board member's claim using data from Montgomery County, Pa. — and found a model that didn't hold up. Now you'll run the same analysis using data from Montgomery County, Md. Your job is to evaluate whether the Maryland data tells a different story, and what that means for how you'd report on the claim.
+
+### Loading the Data
+
+```{r}
+schools <- read_csv("https://raw.githubusercontent.com/dwillis/jour405_files/refs/heads/main/montgomery_md.csv")
+```
+
+### Task 1: Examine the Data First (2 points)
+
+Before you plot anything, look at the data — you know why by now.
+
+```{r}
+summary(schools$`FARMS Pct`)
+schools |> arrange(desc(`FARMS Pct`)) |> head(10)
+```
+
+Are there any data quality issues like the ones you found in the Pennsylvania data? How does the distribution of FARMS percentages compare between the two counties? Note anything that concerns you or gives you confidence in the data.
+
+This distribution of FARMS is a bit more spread out than the last distribution, even though it is more on the lower side of math literacy (under 50%). If anything, the math literacy percentages over 35% stick out a bit, but they could just be outliers. They're also not particularly tied to a specific FARMS percentage (higher or lower) so it truly could just be random. 
+
+
+### Task 2: Create a Scatterplot and Compare (5 points)
+
+Replace the REPLACE_ME value with the correct variable name to create a scatterplot of FARMS percentage vs. math scores for Montgomery County, Md.
+
+```{r}
+schools |>
+  ggplot(aes(x = `FARMS Pct`, y = `% Met or Exceeded Math Expectations`)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(x = "FARMS Percentage", y = "% Met or Exceeded Math Expectations",
+       title = "Math Scores vs. FARMS Percentage, Montgomery County MD")
+```
+
+Describe what you see. Then compare this scatterplot specifically to the Pennsylvania one: what differences do you notice in the direction, strength, and spread of the relationship? The two counties share a name and are both suburban — what might explain why they look so different?
+
+This relationship looks a lot more reliable and meaningful, because the line and the dots seem to go in the same direction (down, instead of up like the first distribution), and the dots are close to the line. The dots also look less like a big cloud or a blob. The two distributions might look so different because they are in different states, and could have very different scholastic programs and resources that would sway this kind of data. 
+
+
+### Task 3: Linear Regression Model (5 points)
+
+Replace the REPLACE_ME value with the correct variable name to run a linear regression model predicting math scores from FARMS percentage.
+
+```{r}
+model <- lm(`% Met or Exceeded Math Expectations` ~ `FARMS Pct`, data = schools)
+summary(model)
+```
+
+Report the three key statistics: the p-value, the Adjusted R-squared, and the coefficient for FARMS Pct. Then interpret them together — not separately. What does the combination of these three numbers tell you about the relationship between poverty and math scores in Montgomery County, Md.? Is this model worth using? How does it compare to the Pennsylvania model?
+
+p-value is 0.00000000000000022
+- statistically significant
+adjusted R-squared is 0.6734
+- 67% of the variation is explained by FARMS: big impact
+coefficient is -0.59511
+- negative: does not go in same direction
+- -0.596: somewhat close to -1 so fairly stable relationship, but not super strong
+
+
+### Task 4: Identifying Schools with the Biggest Residuals (6 points)
+
+Replace the REPLACE_ME values with the correct variable names to calculate predicted values, residuals, and absolute residuals for each school. Then arrange the schools in descending order of absolute residuals.
+
+```{r}
+schools <- schools |>
+  mutate(
+    predicted = predict(model),
+    residual = `% Met or Exceeded Math Expectations` - predicted,
+    abs_residual = abs(residual)
+  ) |>
+  arrange(desc(abs_residual))
+
+head(schools |> select(1, `FARMS Pct`, `% Met or Exceeded Math Expectations`, predicted, residual), 10)
+```
+
+Identify the school with the largest positive residual (doing much better than the model predicts) and the school with the largest negative residual (doing much worse). For each school, find its zip code and look it up on [CensusReporter.org](https://censusreporter.org).
+
+For each of the two schools, answer:
+- What does the demographic and economic profile of the zip code look like?
+- Does anything in that profile help explain why the school is over- or under-performing the model?
+- What would your first reporting question be to the principal of that school?
+
+Largest positive residual: Fox Chapel Elementary with 29.99392
+Largest negative residual: Germantown Elementary with -28.08435
+
+Fox Chapel Elementary (doing better than projected)
+# What does the demographic and economic profile of the zip code look like?
+- 12% of people are 0-9 years old, and there is a split of white (22%), black (29%), asian (20%), and hispanic (25%) people, as well as 4% of people who are 2+ race/ethnicities, and 1% in the 'other' category.
+- per capita income is $47,977, and median household income is $119,731. 9.8% of persons are below the poverty line, and 21% of children under 18 are in poverty.   
+# Does anything in that profile help explain why the school is over- or under-performing the model?
+- FARMS would be greatly benefit that 21% of kids in poverty so that they could focus better, so that could be why FARMS had such a big impact because of the slightly sizeable amount of kids in poverty.
+# What would your first reporting question be to the principal of that school?
+- Are there/what kind of programs do you have that help low-income families with their kid's schooling?
+
+Germantown (doing worse than projected)
+# What does the demographic and economic profile of the zip code look like?
+- 12% of people are 0-9 years old, and there is a split of white (26%), black (27%), asian (18%), and hispanic (22%) people, as well as 6% of people who are 2+ race/ethnicities.
+- per capita income is $52,219, and median household income is $115,022. 8.3% of persons are below the poverty line, and 11% of children under 18 are in poverty.
+# Does anything in that profile help explain why the school is over- or under-performing the model?
+- Germantown does not have as many students struggling financially, so FARMS probably had more of a neutral impact.
+# What would your first reporting question be to the principal of that school?
+- Are the students who actively use FARMS in lower/on-level/higher math classes?
+
+
+### Task 5: Evaluate the Model and Write the Pitch (7 points)
+
+You've now run this analysis on two counties. Return to the school board member's claim: that elementary schools with fewer students on free and reduced-price meals do better on standardized math tests.
+
+Write a short story pitch of 4-6 sentences that addresses all of the following: Does the Maryland data support or contradict the claim? How does it compare to what you found in Pennsylvania? What would you ask the school board member if you called them for comment? And what's the most interesting specific finding from your residuals analysis: which school would you want to visit first, and why?
+
+The Maryland data does support this claim, compared to Pennsylvania who did not support this claim due to lack of sufficient evidence. If I called them for comment, I would ask the school board member to clarify whether they were talking about their specific area or if the claim was meant to include the whole country. Between the residual analyses, the Pennsylvania data was more negative residuals and the Maryland data was more positive residuals. I would want to visit the Maryland school first because the relationship actually means something there, and I want to see why and what exactly they're doing different than the Pennsylvania school. 
