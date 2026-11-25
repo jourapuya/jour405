@@ -15,32 +15,6 @@ data("taylor_album_songs")
 ```
 ^ google told me this was how to load the dataset when I looked it up, i'm not really sure how to load it as a read_csv.
 
-# --- The Tests You Could Run ---
-
-#   More/New Questions
-
-Have Taylor Swift's songs become more or less musically positive over time?
-- happier/sadder correlated with date
-
-Does explicity make Taylor Swift's songs longer or shorter?
-- song length correlated to explicity
-
-Are Taylor Swift's songs louder or quieter when they are explicit?
-Are Taylor Swift's songs faster or slower when they are explicit?
-- explicity correlated to tempo(?) / loudness(?)
-- could replace explicit with over time(?)
-
-Have Taylor Swift's songs become more or less explicit over time?
-- explicit correlated with date
-
-#   Possible Tests To Run
-
-- I think the pearson method from the SoccerFouls activity would work well because it's comparing two things and determining if they have any sort of correlation, which is what my questions are evaluating (looking for a relationship between the variables)
-- I think maybe linear regression could work also? This fits more with the questions that have variables changing over time, such as musical positivity over time, song length over time, explicity over time, etc. 
-
-I looked up "different kinds of statistics tests" on Google to see if I had any more options other than these but they had a lot of variables and I wasn't sure if they worked well with my specific type of question. The other options were T-Tests, Z-Tests, and ANOVA and they were categorized under parametric tests. Unless I'm doing something wrong, these two are the only viable tests that look decent to me.
-
-
 # --- Data Explorations ---
 
 # What does it contain and what time period does it cover? 
@@ -67,3 +41,102 @@ I also am wondering which dataset, taylor_all_songs or taylor_album_songs would 
 
 I went to wjakethompson/taylor on GitHub to try to find the specific link from there I could insert in here instead of just pulling from the website you gave me through the email, but I got confused and couldn't find it.
 
+# --- The Tests You Could Run ---
+
+#   More/New Questions
+
+Have Taylor Swift's songs become more or less musically positive over time?
+- happier/sadder correlated with date
+
+Does explicity make Taylor Swift's songs longer or shorter?
+- song length correlated to explicity
+
+Are Taylor Swift's songs louder or quieter when they are explicit?
+Are Taylor Swift's songs faster or slower when they are explicit?
+- explicity correlated to tempo(?) / loudness(?)
+- could replace explicit with over time(?)
+
+Have Taylor Swift's songs become more or less explicit over time?
+- explicit correlated with date
+
+#   Possible Tests To Run
+
+- I think the pearson method from the SoccerFouls activity would work well because it's comparing two things and determining if they have any sort of correlation, which is what my questions are evaluating (looking for a relationship between the variables)
+- I think maybe linear regression could work also? This fits more with the questions that have variables changing over time, such as musical positivity over time, song length over time, explicity over time, etc. 
+
+I looked up "different kinds of statistics tests" on Google to see if I had any more options other than these but they had a lot of variables and I wasn't sure if they worked well with my specific type of question. The other options were T-Tests, Z-Tests, and ANOVA and they were categorized under parametric tests. Unless I'm doing something wrong, these two are the only viable tests that look decent to me.
+
+# --- Trials, Errors and Lessons ---
+
+```{r}
+taylor_album_songs |>
+  ggplot(aes(x = `track_release`, y = `valence`)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +
+  labs(x = "Track Release", y = "Valence",
+       title = "Musical Positivity of Taylor Swift Songs Over Time")
+```
+- i assume this warning that 9 rows were left out is because they said something like n/a or had some other result that was also not a number
+- i didn't really run into any other errors putting this information into this test so I feel like something might be wrong
+
+```{r}
+model <- lm(`valence` ~ `track_release`, data = taylor_album_songs)
+summary(model)
+```
+- these variables have no relation with one another at all, the information is not statistically significant, the adjusted r-squared is small and negative (which from a google search mean that the information is so bad that it's worse than a straight horizontal line and 0 relationship, so further proof this information is not useful), and the coefficient is very far from -1 and 1.
+- since this is a pretty bad relationship all things considered, I know we said that we could be wrong in our hypotheses, but do I need to test a different question because the relationship is so bad or should I just keep going with this
+
+# explicit example code
+- i didn't know if you gave me this just as an example to look at or to actually use, but I put it in here so I could see it
+
+```{r}
+library(tidyverse)
+library(lubridate)
+
+
+songs <- taylor_album_songs |>
+  filter(
+    !is.na(explicit),
+    !is.na(track_release)
+  ) |>
+  mutate(
+    release_year = year(track_release),
+    year_since_2006 = release_year - 2006
+  )
+
+explicit_model <- glm(
+  explicit ~ year_since_2006,
+  family = binomial(),
+  data = songs
+)
+
+summary(explicit_model)
+
+
+predictions <- tibble(
+  release_year = seq(
+    min(songs$release_year),
+    max(songs$release_year)
+  )
+) |>
+  mutate(
+    year_since_2006 = release_year - 2006,
+    probability = predict(
+      explicit_model,
+      newdata = pick(everything()),
+      type = "response"
+    )
+  )
+
+ggplot(predictions, aes(release_year, probability)) +
+  geom_line() +
+  scale_y_continuous(
+    labels = scales::label_percent(),
+    limits = c(0, 1)
+  ) +
+  labs(
+    x = "Release year",
+    y = "Predicted probability of being explicit",
+    title = "Explicitness over time"
+  )
+```
